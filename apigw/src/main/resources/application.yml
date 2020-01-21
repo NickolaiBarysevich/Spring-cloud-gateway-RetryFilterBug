@@ -1,0 +1,35 @@
+management:
+  server:
+    port: 8081
+  endpoint:
+    info:
+      enabled: true
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  application:
+    name: apigw
+  cloud:
+    gateway:
+      routes:
+        - id: canary
+          uri: http://canary-service:8082
+          predicates:
+            - Path=/canary**
+          filters:
+            - RewritePath=/canary, /api/v1/get
+            - name: Retry
+              args:
+                retries: 3
+                statuses: BAD_REQUEST
+#                series: null #uncomment for make working as expected
+                backoff:
+                  firstBackoff: 1000ms
+                  maxBackoff: 1000ms
+                  factor: 2
+                  basedOnPreviousValue: false
