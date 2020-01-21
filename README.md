@@ -54,7 +54,7 @@ The only solution is to specify series as `null`:
 ## The reason of the bug
 `RetryGatewayFilterFactory` is configured so, that if the response code is not the code that specified in configuration 
 and it not null, the factory will try to retry by series.
-```
+```java
 if (!retryableStatusCode && statusCode != null) 
     retryableStatusCode = retryConfig.getSeries().stream()
 	.anyMatch(series -> statusCode.series().equals(series));
