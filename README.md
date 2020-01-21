@@ -1,7 +1,7 @@
 # Spring-cloud-gateway-RetryFilterBug
 This repository is reproducing the bug of Retry filter in spring cloud gateway
 
-##Build and Run
+## Build and Run
 - Build project:
 ```
 ./gradlew clean build
@@ -15,7 +15,7 @@ This repository is reproducing the bug of Retry filter in spring cloud gateway
     ```
     docker-compose up -d --remove-orphan --build
     ```
-##Reproducing bug
+## Reproducing bug
 Configuration contains only 1 route: /canary. Retry filter configuration for the route:
 ```yaml
 - name: Retry
@@ -51,7 +51,7 @@ The only solution is to specify series as `null`:
       factor: 2
       basedOnPreviousValue: false
 ```
-##The reason of the bug
+## The reason of the bug
 `RetryGatewayFilterFactory` is configured so, that if the response code is not the code that specified in configuration 
 and it not null, the factory will try to retry by series.
 ```
@@ -74,7 +74,7 @@ public static class RetryConfig implements HasRouteId {
 
 So even the series is not specified in configuration the filter will always check the series.
 
-##Possible solution
+## Possible solution
 I think the better way to fix the bug is to initialize `series` with empty list.
 ```java
 public static class RetryConfig implements HasRouteId {
